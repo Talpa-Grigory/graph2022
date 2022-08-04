@@ -37,7 +37,6 @@ void TestWeightedOrientedGraph();
  *
  * @param cli Указатель на HTTP клиент.
  */
-void TestFindMaxMatching(httplib::Client* cli);
 void TestTopologicalSorting(httplib::Client* cli);
 
 /** 
@@ -52,6 +51,7 @@ void TestTopologicalSorting(httplib::Client* cli);
 void TestNegCycle(httplib::Client* cli);
 void TestNegCycle(httplib::Client* cli);
 void TestBelmanf(httplib::Client* cli);
+void TestFindMaxMatching(httplib::Client* cli);
 /**
  * @brief Набор тестов для алгоритма Диница.
  *

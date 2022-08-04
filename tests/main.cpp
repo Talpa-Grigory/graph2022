@@ -40,7 +40,6 @@ int main(int argc, char* argv[]) {
   httplib::Client cli(url.c_str());
 
   /* Сюда нужно вставить вызов набора тестов для алгоритма. */
-  TestFindMaxMatching(&cli);
   TestTopologicalSorting(&cli);
   TestCutPoints(&cli);
   TestDinic(&cli);
@@ -48,6 +47,7 @@ int main(int argc, char* argv[]) {
   TestMaximal(&cli);
   TestNegCycle(&cli);
   TestBelmanf(&cli);
+  TestFindMaxMatching(&cli);
 
   /* Конец вставки. */
 
