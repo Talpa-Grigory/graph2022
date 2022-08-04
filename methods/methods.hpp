@@ -29,6 +29,7 @@ namespace graph {
  * @brief Метод топологической сортировки.
 
  * @brief Метод поиска точек сочленения.
+ * @brief Метод поиска наибольшего паросочетания.
  *
  * @param input Входные данные в формате JSON.
  * @param output Выходные данные в формате JSON.
@@ -41,6 +42,7 @@ namespace graph {
 int TopologicalSortingMethod(const nlohmann::json& input,
                              nlohmann::json* output);
 int CutPointsMethod(const nlohmann::json& input, nlohmann::json* output);
+int FindMaxMatchingMethod(const nlohmann::json& input, nlohmann::json* output);
 /**
  * @brief Метод Диница.
  *

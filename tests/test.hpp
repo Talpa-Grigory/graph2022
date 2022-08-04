@@ -37,6 +37,7 @@ void TestWeightedOrientedGraph();
  *
  * @param cli Указатель на HTTP клиент.
  */
+void TestFindMaxMatching(httplib::Client* cli);
 void TestTopologicalSorting(httplib::Client* cli);
 
 /** 
