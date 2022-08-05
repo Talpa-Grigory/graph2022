@@ -84,6 +84,9 @@ void BlossomContraction(size_t s, size_t u, size_t v,std::vector<size_t>* match,
 template<class T>
 
 size_t FindAugmentingPath(size_t s, T graph,std::vector<size_t>* match,std::vector<size_t>* father, size_t V) {
+	for(size_t i = 0; i < V + 1; i++){
+	(*father)[i] = 0;
+	}
 	std::cout << "7" << std::endl;
     size_t qh = 0, qt = 0;
 	std::vector<bool> inq(V + 1);
