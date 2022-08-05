@@ -119,7 +119,7 @@ size_t FindAugmentingPath(size_t s,T graph,std::unordered_map<size_t,size_t>* ma
 	}
 	std::unordered_map<size_t,size_t> q;
 	for(size_t i = 0; i < V + 1; i++){
-		q[i] = i;
+		q[i] = 0;
 	}
 		
 	q[0] = s;
