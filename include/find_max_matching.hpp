@@ -1,9 +1,3 @@
-/**
- * @file find_max_matching.hpp
- * @author Talpa Grigory
- *
- * Реализация метода поиска наибольшего паросочетания.
- */
 #ifndef INCLUDE_FIND_MAX_MATCHING_HPP_
 #define INCLUDE_FIND_MAX_MATCHING_HPP_
 #include <iostream>
@@ -13,130 +7,97 @@
 #include <utility>
 #include <unordered_set>
 #include <cstring>
-#include "graph.hpp"
-#define M 500  // max number of vertices
-size_t V, qh = 0, qt = 0;
-int match[M], father[M];
-size_t q[M], base[M];
-bool inq[M], inb[M];
+#include "graph.hpp" 
 
 namespace graph {
-
-/**
-* @brief Поиск наименьшего предка.
-*
-* @param father массив хранящий предков нечетных вершин.
-* @param match массив хранящий паросочетания.
-*/  
-size_t LCA(size_t root, size_t u, size_t v) {
-        static bool inp[M];
+	
+size_t LCA(size_t root, size_t u, size_t v,std::vector<size_t>* match, std::vector<size_t>* father,std::vector<size_t>* base, size_t V) {
+        static std::vector<bool> inp(V + 1);
 		std::cout << "27" << std::endl;
-        memset(inp, 0, sizeof(inp));
         while (1) {
 			std::cout << "28" << std::endl;
-            inp[u = base[u]] = true;
+            inp[u = (*base)[u]] = true;
             if (u == root){
 				std::cout << "29" << std::endl;
                 break;
 			}
 			std::cout << "30" << std::endl;
-            u = static_cast<size_t>(father[match[u]]);
+            u = (*father)[(*match)[u]];
         }
 		std::cout << "30.5" << std::endl;
         while (1) {
 			std::cout << "31" << std::endl;
-			v = base[v];
-            if (inp[v]){
+			v = (*base)[v];
+            if (inp[(*base)[v]]){
 				std::cout << "32" << std::endl;
                 return v;
 			}
             else {
 				std::cout << "33" << std::endl;
-                v = static_cast<size_t>(father[match[v]]);
+                v = (*father)[(*match)[v]];
 			}
         }
-    }
-/**
-* @brief Проход от вершины до базы.
-*
-*
-* @param base массив базу цветка вершин.
-* @param father массив хранящий предков нечетных вершин.
-* @param match массив хранящий паросочетания.
-* @param lca наименьший общий предок
-*/ 
-    void MarkBlossom(size_t lca, size_t u) {
-		std::cout << "23" << std::endl;
-        while (base[u] != lca) {
+}
+	
+void MarkBlossom(size_t lca, size_t u, std::vector<size_t>* match, std::vector<size_t>* father,std::vector<size_t>* base,std::vector<bool>* inb) {
+        std::cout << "23" << std::endl;
+		while ((*base)[u] != lca) {
 			std::cout << "24" << std::endl;
-            size_t v = static_cast<size_t>(match[u]);
-            inb[base[u]] = inb[base[v]] = true;
-            u = static_cast<size_t>(father[v]);
+            size_t v = (*match)[u];
+            (*inb)[(*base)[u]] = (*inb)[(*base)[v]] = true;
+            u = (*father)[v];
 			std::cout << "25" << std::endl;
-            if (base[u] != lca) {
+            if ((*base)[u] != lca){
 				std::cout << "26" << std::endl;
-                father[u] = static_cast<int>(v);
+                (*father)[u] = v;
 			}
         }
-    }
-/**
- * @brief Сжатие цветка.
- *
- *
- * @param base массив базу цветка вершин.
- * @param father массив хранящий предков нечетных вершин.
- * @param lca наименьший общий предок
- */    
-    void BlossomContraction(size_t s, size_t u, size_t v) {
+}
+	
+void BlossomContraction(size_t s, size_t u, size_t v,std::vector<size_t>* match,std::vector<size_t>* father,std::vector<size_t>* base,std::vector<size_t>* q,std::vector<bool>* inq, size_t* qt, size_t V) {
         std::cout << "17" << std::endl;
-		size_t lca = LCA(s, u, v);
-        memset(inb, 0, sizeof(inb));
-        MarkBlossom(lca, u);
-        MarkBlossom(lca, v);
-        if (base[u] != lca){
+		size_t lca = LCA(s, u, v,match,father,base,V);
+        std::vector<bool> inb(V + 1);
+        MarkBlossom(lca, u,match,father,base,&inb);
+        MarkBlossom(lca, v,match,father,base,&inb);
+        if ((*base)[u] != lca){
 			std::cout << "18" << std::endl;
-            father[u] = static_cast<int>(v);
+            (*father)[u] = v;
 		}
-        if (base[v] != lca){
+        if ((*base)[v] != lca){
 			std::cout << "19" << std::endl;
-            father[v] = static_cast<int>(u);
+            (*father)[v] = u;
 		}
-        for (size_t i = 0; i < V; i++){
-		std::cout << "20" << std::endl;
-            if (inb[base[i]]) {
+        for (size_t i = 0; i < V; i++){	
+			std::cout << "20" << std::endl;		
+            if (inb[(*base)[i]]) {
 				std::cout << "21" << std::endl;
-                base[i] = lca;
-                if (!inq[i]){
+                (*base)[i] = lca;
+                if (!(*inq)[i]){
 					std::cout << "22" << std::endl;
-                    inq[q[++qt] = i] = true;
+                    (*inq)[(*q)[++(*qt)] = i] = true;
 				}
             }
 		}
     }
-template<class T>
-/**
- * @brief Поиск увеличивающей цепи.
- *
- * @tparam T тип графа.
- *
- * @param base массив базу цветка вершин.
- * @param father массив хранящий предков нечетных вершин.
- * @param match массив хранящий паросочетания.
- */
 
-int FindAugmentingPath(size_t s, T graph) {
-    std::cout << "7" << std::endl;
-	memset(inq, 0, sizeof(inq));
-    memset(father, -1, sizeof(father));
+template<class T>
+
+size_t FindAugmentingPath(size_t s, T graph,std::vector<size_t>* match,std::vector<size_t>* father, size_t V) {
+	std::cout << "7" << std::endl;
+    size_t qh = 0, qt = 0;
+	std::vector<bool> inq(V + 1);
+	std::vector<size_t> base(V + 1);
     for (size_t i = 0; i < V; i++)
         base[i] = i;
+	std::vector<size_t> q(V + 1);
     inq[q[qh = qt = 0] = s] = true;
 	std::cout << "8" << std::endl;
 	std::cout << "father: ";
-	for(int i = 0; i < V + 1; i++){
-		std::cout << father[i] << " ";
-	}
-	std::cout << "" << std::endl;
+				for(size_t i = 0; i < V + 1; i++){
+					std::cout << (*father)[i] << " ";
+				}
+				std::cout << "" << std::endl;
     while (qh <= qt) {
 		std::cout << "9" << std::endl;
         size_t u = q[qh++];
@@ -148,107 +109,92 @@ int FindAugmentingPath(size_t s, T graph) {
 			std::cout << "11" << std::endl;
             size_t v = elem;
 			std::cout << "v: " << v << std::endl;
-            if (base[u] != base[v] && static_cast<size_t>(match[u]) != v) {
+            if (base[u] != base[v] && (*match)[u] != v) {
 				std::cout << "12" << std::endl;
 				std::cout << "v: " << v << std::endl;
 				std::cout << "u: " << u << std::endl;
 				std::cout << "father: ";
-				for(int i = 0; i < V + 1; i++){
-					std::cout << father[i] << " ";
+				for(size_t i = 0; i < V + 1; i++){
+					std::cout << (*father)[i] << " ";
 				}
 				std::cout << "" << std::endl;
-                if ((v == s) || (match[v] != -1 && father[match[v]] != -1)) {
+                if ((v == s) || ((*match)[v] != 0 && (*father)[(*match)[v]] != 0)) {
 					std::cout << "13" << std::endl;
-                        BlossomContraction(s, u, v);
-                    } else if (father[v] == -1) {
+                        BlossomContraction(s, u, v,match,father,&base,&q,&inq,&qt,V);
+                    } else if ((*father)[v] == 0) {
 						std::cout << "14" << std::endl;
-                        father[v] = static_cast<int>(u);
-                        if (match[v] == -1){
+                        (*father)[v] = u;
+                        if ((*match)[v] == 0){
 							std::cout << "15" << std::endl;
-                            return static_cast<int>(v);
+                            return v;
 						}
-                        else if (!inq[match[v]]){
+                        else if (!inq[(*match)[v]]){
 							std::cout << "16" << std::endl;
-                            inq[q[++qt] = static_cast<size_t>(match[v])] = true;
+                            inq[q[++qt] = (*match)[v]] = true;
 						}
                     }
             }
             }
             }
         }
-        return -1;
+        return 0;
     }
-/**
- * @brief Увелечение пути вдоль цепи.
- *
- * @tparam T тип графа.
- *
- * @param father массив хранящий предков нечетных вершин.
- * @param match массив хранящий паросочетания.
- */
-size_t AugmentPath(int t) {
-    int u = t;
+
+size_t AugmentPath(size_t t,std::vector<size_t>* match,std::vector<size_t>* father) {
+    size_t u = t;
     size_t  v, w;
 	std::cout << "5" << std::endl;
-    while (u != -1) {
+    while (u != 0) {
 		std::cout << "6" << std::endl;
-        v = static_cast<size_t>(father[u]);
-        w = static_cast<size_t>(match[v]);
-        match[v] = u;
-        match[u] = static_cast<int>(v);
-        u = static_cast<int>(w);
+        v = (*father)[u];
+        w = (*match)[v];
+        (*match)[v] = u;
+        (*match)[u] = v;
+        u = w;
     }
-    return t != -1;
+    return t != 0;
 }
-    template<class T>
-/**
- * @brief Алгоритм Эдондса.
- *
- * @tparam T тип графа.
- *
- * @param match массив хранящий паросочетания.
- * @param match_counts количество ребер в наибольшем парасочетании.
- */
-size_t EdmondsBlossomAlgorithm(T graph) {
+
+template<class T>
+size_t EdmondsBlossomAlgorithm(T graph,std::vector<size_t>* match, size_t V) {
     size_t match_counts = 0;
-    memset(match, -1, sizeof(match));
+    std::vector<size_t> father(V + 1);
 	std::cout << "2" << std::endl;
+	std::cout << "father: ";
+	for(size_t i = 0; i < V + 1; i++){
+		std::cout << father[i] << " ";
+	}
+	std::cout << "" << std::endl;
     for (size_t u = 0; u < V; u++) {
 		std::cout << "3" << std::endl;
-        if (match[u] == -1) {
+        if ((*match)[u] == 0){
 			std::cout << "4" << std::endl;
-            match_counts += AugmentPath(FindAugmentingPath(u, graph));
+            match_counts += AugmentPath(FindAugmentingPath(u, graph, match, &father,V), match, &father);
 		}
     }
     return match_counts;
 }
+
 template<class T>
-    /**
- * @brief Функция поиска наибольшего паросочетания.
- *
- * @tparam T тип графа.
- *
- * @param result вектор, в котором хранится ответ.
- */
 void FindMaxMatching(T graph, std::vector<std::pair<size_t, size_t>>* result) {
-    V = graph.NumVertices();
+    size_t V = graph.NumVertices();
+	std::vector<size_t> match(V + 1);
 	std::cout << "1" << std::endl;
-    size_t res = EdmondsBlossomAlgorithm(graph);
+    size_t res = EdmondsBlossomAlgorithm(graph,&match,V);
 	std::cout << "35" << std::endl;
     if (!res){
-		std::cout << "36" << std::endl;
         return;
+		std::cout << "36" << std::endl;
 	}
-    for (int i = 0; i < static_cast<int>(V); i++) {
+    for (size_t i = 0; i < V; i++){
 		std::cout << "37" << std::endl;
-            if (i < match[i]) {
-				std::cout << "38" << std::endl;
-(*result).push_back({static_cast<size_t>(i), static_cast<size_t>(match[i])});
-            }
+        if (i < match[i]){
+			std::cout << "38" << std::endl;
+		(*result).push_back({i, match[i]});
+        }
     }
 	std::cout << "39" << std::endl;
 }
 
-}  // namespace graph
+} // namespace graph
 #endif  // INCLUDE_FIND_MAX_MATCHING_HPP_
-
