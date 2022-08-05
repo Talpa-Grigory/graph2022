@@ -115,6 +115,7 @@ template<class T>
 void FindMaxMatching(T graph, std::vector<std::pair<size_t, size_t>>* result) {
     size_t V = graph.NumVertices();
 	std::vector<size_t> match(V + 1);
+	std::cout << "1" << std::endl;
     size_t res = EdmondsBlossomAlgorithm(graph,&match,V);
     if (!res)
         return;
