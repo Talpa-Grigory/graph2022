@@ -132,8 +132,9 @@ int FindAugmentingPath(size_t s, T graph) {
         base[i] = i;
     inq[q[qh = qt = 0] = s] = true;
 	std::cout << "8" << std::endl;
+	std::cout << "father: ";
 	for(int i = 0; i < V + 1; i++){
-		std::cout << "father: " << father[i] << " ";
+		std::cout << father[i] << " ";
 	}
 	std::cout << "" << std::endl;
     while (qh <= qt) {
