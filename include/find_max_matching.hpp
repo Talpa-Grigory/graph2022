@@ -132,16 +132,30 @@ int FindAugmentingPath(size_t s, T graph) {
         base[i] = i;
     inq[q[qh = qt = 0] = s] = true;
 	std::cout << "8" << std::endl;
+	for(int i = 0; i < V + 1; i++){
+		std::cout << "father: " << father[i] << " ";
+	}
+	std::cout << "" << std::endl;
     while (qh <= qt) {
 		std::cout << "9" << std::endl;
         size_t u = q[qh++];
+		std::cout << "u: " << u << std::endl;
         if (graph.HasVertex(u)) {
 			std::cout << "10" << std::endl;
+			std::cout << "u: " << u << std::endl;
         for (auto elem : graph.Edges(u)) {
 			std::cout << "11" << std::endl;
             size_t v = elem;
+			std::cout << "v: " << v << std::endl;
             if (base[u] != base[v] && static_cast<size_t>(match[u]) != v) {
 				std::cout << "12" << std::endl;
+				std::cout << "v: " << v << std::endl;
+				std::cout << "u: " << u << std::endl;
+				std::cout << "father: ";
+				for(int i = 0; i < V + 1; i++){
+					std::cout << father[i] << " ";
+				}
+				std::cout << "" << std::endl;
                 if ((v == s) || (match[v] != -1 && father[match[v]] != -1)) {
 					std::cout << "13" << std::endl;
                         BlossomContraction(s, u, v);
