@@ -12,7 +12,7 @@
 namespace graph {
 	
 size_t LCA(size_t root, size_t u, size_t v,std::vector<size_t>* match, std::vector<size_t>* father,std::vector<size_t>* base, size_t V) {
-        std::vector<bool> inp(V + 1);
+        static std::vector<bool> inp(V + 1);
 		std::cout << "27" << std::endl;
         while (1) {
 			std::cout << "28" << std::endl;
@@ -27,7 +27,8 @@ size_t LCA(size_t root, size_t u, size_t v,std::vector<size_t>* match, std::vect
 		std::cout << "30.5" << std::endl;
         while (1) {
 			std::cout << "31" << std::endl;
-            if (inp[v = (*base)[v]]){
+			v = (*base)[v];
+            if (inp[(*base)[v]]){
 				std::cout << "32" << std::endl;
                 return v;
 			}
