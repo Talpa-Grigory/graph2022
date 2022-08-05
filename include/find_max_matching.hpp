@@ -160,11 +160,6 @@ size_t EdmondsBlossomAlgorithm(T graph,std::vector<size_t>* match, size_t V) {
     size_t match_counts = 0;
     std::vector<size_t> father(V + 1);
 	std::cout << "2" << std::endl;
-	std::cout << "father: ";
-	for(size_t i = 0; i < V + 1; i++){
-		std::cout << father[i] << " ";
-	}
-	std::cout << "" << std::endl;
     for (size_t u = 0; u < V; u++) {
 		std::cout << "3" << std::endl;
         if ((*match)[u] == 0){
