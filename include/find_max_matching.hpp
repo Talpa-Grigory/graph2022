@@ -1,8 +1,7 @@
 #ifndef INCLUDE_FIND_MAX_MATCHING_HPP_
-#define INCLUDE_FIND_MAX_MATCHING_HPP_#include <vector>
-
+#define INCLUDE_FIND_MAX_MATCHING_HPP_
+#include <vector>
 #include <unordered_set>
-
 #include "graph.hpp"
 
 namespace graph {
