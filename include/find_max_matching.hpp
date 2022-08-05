@@ -4,45 +4,46 @@
  *
  * Реализация метода поиска наибольшего паросочетания.
  */
- 
 #ifndef INCLUDE_FIND_MAX_MATCHING_HPP_
 #define INCLUDE_FIND_MAX_MATCHING_HPP_
+#include <iostream>
+#include <map>
 #include <vector>
-#include <unordered_map>
-#include <unordered_set>
 #include <algorithm>
 #include <utility>
-#include <iostream>
+#include <unordered_set>
+#include <cstring>
 #include "graph.hpp"
+#define M 500  // max number of vertices
+size_t V, qh = 0, qt = 0;
+int match[M], father[M];
+size_t q[M], base[M];
+bool inq[M], inb[M];
 
-namespace graph {	
+namespace graph {
+
 /**
 * @brief Поиск наименьшего предка.
 *
 * @param father массив хранящий предков нечетных вершин.
 * @param match массив хранящий паросочетания.
-*/ 
-size_t LCA(size_t root, size_t u, size_t v,std::unordered_map<size_t,size_t>* match,std::unordered_map<size_t,size_t>* father,std::unordered_map<size_t,size_t>* base,size_t V) {
-	std::unordered_map<size_t,bool> inp;
-	for(size_t i = 0; i < V + 1; i++) {
-		inp[i] = 0;
-	}
-    while (true) {
-		u = (*base)[u];
-        inp[u] = true;
-        if (u == root)
-			break;
-        u = (*father)[(*match)[u]];
+*/  
+size_t LCA(size_t root, size_t u, size_t v) {
+        static bool inp[M];
+        memset(inp, 0, sizeof(inp));
+        while (1) {
+            inp[u = base[u]] = true;
+            if (u == root)
+                break;
+            u = static_cast<size_t>(father[match[u]]);
+        }
+        while (1) {
+            if (inp[v = base[v]])
+                return v;
+            else
+                v = static_cast<size_t>(father[match[v]]);
+        }
     }
-    while (true) {
-		v = (*base)[v];
-        if (inp[v])
-			return v;
-        else
-			v = (*father)[(*match)[v]];
-    }
-}
-	
 /**
 * @brief Проход от вершины до базы.
 *
@@ -51,18 +52,16 @@ size_t LCA(size_t root, size_t u, size_t v,std::unordered_map<size_t,size_t>* ma
 * @param father массив хранящий предков нечетных вершин.
 * @param match массив хранящий паросочетания.
 * @param lca наименьший общий предок
-*/
-void MarkBlossom(size_t lca, size_t u,std::unordered_map<size_t,size_t>* match,std::unordered_map<size_t,size_t>* father,std::unordered_map<size_t,size_t>* base,std::unordered_map<size_t,bool>* inb) {
-    while ((*base)[u] != lca) {
-        size_t v = (*match)[u];
-		(*inb)[(*base)[v]] = true;
-        (*inb)[(*base)[u]] = true;
-		u = (*father)[v];
-        if ((*base)[u] != lca)
-			(*father)[u] = v;
+*/ 
+    void MarkBlossom(size_t lca, size_t u) {
+        while (base[u] != lca) {
+            size_t v = static_cast<size_t>(match[u]);
+            inb[base[u]] = inb[base[v]] = true;
+            u = static_cast<size_t>(father[v]);
+            if (base[u] != lca)
+                father[u] = static_cast<int>(v);
+        }
     }
-} 	
-		
 /**
  * @brief Сжатие цветка.
  *
@@ -70,33 +69,23 @@ void MarkBlossom(size_t lca, size_t u,std::unordered_map<size_t,size_t>* match,s
  * @param base массив базу цветка вершин.
  * @param father массив хранящий предков нечетных вершин.
  * @param lca наименьший общий предок
- */   
-void BlossomContraction(size_t s, size_t u, size_t v,std::unordered_map<size_t,size_t>* match,std::unordered_map<size_t,size_t>* father,std::unordered_map<size_t,size_t>* base,std::unordered_map<size_t,size_t>* q,std::unordered_map<size_t,bool>* inq, size_t* qt, size_t V){
-        size_t lca = LCA(s, u, v,match,father,base,V);
-		std::unordered_map<size_t,bool> inb;
-	    for(size_t i = 0; i < V + 1; i++) {
-			inb[i] = 0;
-		}
-		
-        MarkBlossom(lca, u,match,father,base,&inb);
-        MarkBlossom(lca, v,match,father,base,&inb);
-		
-        if ((*base)[u] != lca)
-            (*father)[u] = v;
-        if ((*base)[v] != lca)
-            (*father)[v] = u;
-        for (size_t i = 0; i < V; i++){
-            if (inb[(*base)[i]]){
-                (*base)[i] = lca;
-                if (!(*inq)[i]){
-                    ++(*qt);
-                    (*q)[(*qt)] = i;
-                    (*inq)[i] = true;
-                }
+ */    
+    void BlossomContraction(size_t s, size_t u, size_t v) {
+        size_t lca = LCA(s, u, v);
+        memset(inb, 0, sizeof(inb));
+        MarkBlossom(lca, u);
+        MarkBlossom(lca, v);
+        if (base[u] != lca)
+            father[u] = static_cast<int>(v);
+        if (base[v] != lca)
+            father[v] = static_cast<int>(u);
+        for (size_t i = 0; i < V; i++)
+            if (inb[base[i]]) {
+                base[i] = lca;
+                if (!inq[i])
+                    inq[q[++qt] = i] = true;
             }
-		}
- }	
-	
+    }
 template<class T>
 /**
  * @brief Поиск увеличивающей цепи.
@@ -107,50 +96,34 @@ template<class T>
  * @param father массив хранящий предков нечетных вершин.
  * @param match массив хранящий паросочетания.
  */
-size_t FindAugmentingPath(size_t s,T graph,std::unordered_map<size_t,size_t>* match,std::unordered_map<size_t,size_t>* father,size_t V) {
-    size_t qh = 0, qt = 0;
-	std::unordered_map<size_t,bool> inq;
-	for(size_t i = 0; i < V + 1; i++){
-		inq[i] = 0;
-	}
-	std::unordered_map<size_t,size_t> base;
-	for(size_t i = 0; i < V; i++){
-		base[i] = i;
-	}
-	std::unordered_map<size_t,size_t> q;
-	for(size_t i = 0; i < V + 1; i++){
-		q[i] = 0;
-	}
-		
-	q[0] = s;
-    inq[s] = true;
-			
+
+int FindAugmentingPath(size_t s, T graph) {
+    memset(inq, 0, sizeof(inq));
+    memset(father, -1, sizeof(father));
+    for (size_t i = 0; i < V; i++)
+        base[i] = i;
+    inq[q[qh = qt = 0] = s] = true;
     while (qh <= qt) {
-		size_t u = q[qh++];
-		if (graph.HasVertex(u)) {
-			for (auto elem : graph.Edges(u)) {
-				size_t v = elem;
-				if (base[u] != base[v] && (*match)[u] != v){
-					if ((v == s) || ((*match)[v] != 0 && (*father)[(*match)[v]] != 0))
-						BlossomContraction(s, u, v,match,father,&base,&q,&inq,&qt,V);
-					else if ((*father)[v] == 0){
-						(*father)[v] = u;
-						if ((*match)[v] == 0) 
-							return v;
-						else if (!inq[(*match)[v]]){
-							++qt;
-                            q[qt] = (*match)[v];
-                            inq[q[qt]] = true;
-						}
-					}
-				}
-			
-			}
-		}
+        size_t u = q[qh++];
+        if (graph.HasVertex(u)) {
+        for (auto elem : graph.Edges(u)) {
+            size_t v = elem;
+            if (base[u] != base[v] && static_cast<size_t>(match[u]) != v) {
+                if ((v == s) || (match[v] != -1 && father[match[v]] != -1)) {
+                        BlossomContraction(s, u, v);
+                    } else if (father[v] == -1) {
+                        father[v] = static_cast<int>(u);
+                        if (match[v] == -1)
+                            return static_cast<int>(v);
+                        else if (!inq[match[v]])
+                            inq[q[++qt] = static_cast<size_t>(match[v])] = true;
+                    }
+            }
+            }
+            }
+        }
+        return -1;
     }
-        return 0;
-}
-	
 /**
  * @brief Увелечение пути вдоль цепи.
  *
@@ -159,20 +132,19 @@ size_t FindAugmentingPath(size_t s,T graph,std::unordered_map<size_t,size_t>* ma
  * @param father массив хранящий предков нечетных вершин.
  * @param match массив хранящий паросочетания.
  */
-size_t AugmentPath(size_t t, std::unordered_map<size_t,size_t>* match,std::unordered_map<size_t,size_t>* father) {
-	size_t u = t;
-	size_t v, w;
-    while (u != 0) {
-        v =(*father)[u]; 
-        w = (*match)[v];
-		(*match)[v] = u;
-        (*match)[u] = v;
-        u = w;
+size_t AugmentPath(int t) {
+    int u = t;
+    size_t  v, w;
+    while (u != -1) {
+        v = static_cast<size_t>(father[u]);
+        w = static_cast<size_t>(match[v]);
+        match[v] = u;
+        match[u] = static_cast<int>(v);
+        u = static_cast<int>(w);
     }
-    return t != 0;
+    return t != -1;
 }
-
-template<class T>
+    template<class T>
 /**
  * @brief Алгоритм Эдондса.
  *
@@ -181,20 +153,16 @@ template<class T>
  * @param match массив хранящий паросочетания.
  * @param match_counts количество ребер в наибольшем парасочетании.
  */
-size_t EdmondsBlossomAlgorithm(T graph,size_t V,std::unordered_map<size_t,size_t>* match) {
+size_t EdmondsBlossomAlgorithm(T graph) {
     size_t match_counts = 0;
-    std::unordered_map<size_t,size_t> father;
-	for(size_t i = 0; i < V + 1; i++){
-		father[i] = 0;
-	}
+    memset(match, -1, sizeof(match));
 
     for (size_t u = 0; u < V; u++) {
-        if ((*match)[u] == 0)
-            match_counts += AugmentPath(FindAugmentingPath(u,graph,match,&father,V),match,&father);
+        if (match[u] == -1)
+            match_counts += AugmentPath(FindAugmentingPath(u, graph));
     }
     return match_counts;
 }
-
 template<class T>
     /**
  * @brief Функция поиска наибольшего паросочетания.
@@ -204,20 +172,17 @@ template<class T>
  * @param result вектор, в котором хранится ответ.
  */
 void FindMaxMatching(T graph, std::vector<std::pair<size_t, size_t>>* result) {
-   size_t V = graph.NumVertices();
-	std::unordered_map<size_t,size_t> match;
-	for(size_t i = 0; i < V + 1; i++){
-			match[i] = 0;
-		}
-    size_t res = EdmondsBlossomAlgorithm(graph,V,&match);
+    V = graph.NumVertices();
+    size_t res = EdmondsBlossomAlgorithm(graph);
     if (!res)
         return;
-    for (size_t i = 0; i < V; i++) {
-        if (i < match[i]) {
-			(*result).push_back({i, match[i]});
-        }
+    for (int i = 0; i < static_cast<int>(V); i++) {
+            if (i < match[i]) {
+(*result).push_back({static_cast<size_t>(i), static_cast<size_t>(match[i])});
+            }
     }
 }
+
 }  // namespace graph
 #endif  // INCLUDE_FIND_MAX_MATCHING_HPP_
 
