@@ -99,7 +99,7 @@ template < class T >
  *@param father массив хранящий предков нечетных вершин.
  *@param match массив хранящий паросочетания.
  */
-size_t FindAugmentingPath(size_t s, T graph, std::unordered_map < size_t, size_t > * match, std::unordered_map < size_t, size_t > * father, size_t V) {
+size_t FindAugmentingPath(size_t s, const T& graph, std::unordered_map < size_t, size_t > * match, std::unordered_map < size_t, size_t > * father, size_t V) {
     for (size_t i = 0; i < V + 1; i++) {
         ( * father)[i] = 0;
     }
@@ -172,7 +172,7 @@ template < class T >
  *@param match массив хранящий паросочетания.
  *@param match_counts количество ребер в наибольшем парасочетании.
  */
-size_t EdmondsBlossomAlgorithm(T graph, size_t V, std::unordered_map < size_t, size_t > * match) {
+size_t EdmondsBlossomAlgorithm(const T& graph, size_t V, std::unordered_map < size_t, size_t > * match) {
     size_t match_counts = 0;
     std::unordered_map < size_t, size_t > father;
     for (size_t i = 0; i < V + 1; i++) {
@@ -194,7 +194,7 @@ template < class T >
  *
  *@param result вектор, в котором хранится ответ.
  */
-void FindMaxMatching(T graph, std::vector < std::pair < size_t, size_t >> * result) {
+void FindMaxMatching(const T& graph, std::vector < std::pair < size_t, size_t >> * result) {
     size_t V = graph.NumVertices();
     std::unordered_map < size_t, size_t > match;
     for (size_t i = 0; i < V + 1; i++) {
