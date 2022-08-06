@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
+#include <optional>
 #include "graph.hpp"
 
 namespace graph {
@@ -119,7 +120,7 @@ template <class T>
  *@param father массив хранящий предков нечетных вершин.
  *@param match массив хранящий паросочетания.
  */
-size_t FindAugmentingPath(size_t s, const T& graph,
+std::optional<size_t> FindAugmentingPath(size_t s, const T& graph,
               std::unordered_map<size_t, size_t>* match,
               std::unordered_map<size_t, size_t>* father,
               size_t V) {
@@ -167,7 +168,7 @@ size_t FindAugmentingPath(size_t s, const T& graph,
           }
         }
     }
-    return 0;
+    return std::nullopt;
 }
 
 /**
@@ -178,9 +179,11 @@ size_t FindAugmentingPath(size_t s, const T& graph,
  *@param father массив хранящий предков нечетных вершин.
  *@param match массив хранящий паросочетания.
  */
-size_t AugmentPath(size_t t, std::unordered_map<size_t, size_t>* match,
+size_t AugmentPath(std::optional<size_t> t, std::unordered_map<size_t, size_t>* match,
            std::unordered_map<size_t, size_t>* father) {
-    size_t u = t;
+    if(t == std::nullopt)
+      return 0;
+    std::optional<size_t> u = t;
     size_t v, w;
     while (u != 0) {
         v = (*father)[u];
@@ -189,7 +192,7 @@ size_t AugmentPath(size_t t, std::unordered_map<size_t, size_t>* match,
         (*match)[u] = v;
         u = w;
     }
-    return t != 0;
+    return 1;
 }
 
 template <class T>
