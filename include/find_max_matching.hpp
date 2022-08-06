@@ -155,7 +155,7 @@ size_t FindAugmentingPath(size_t s, const T& graph,
                     father, &base, &q, &inq, &qt, V);
                   } else if ((*father)[v] == 0) {
                       (*father)[v] = u;
-                      if ((*match)[v] == 0){
+                      if ((*match)[v] == 0) {
                         return v;
                       } else if (!inq[(*match)[v]]) {
                         ++qt;
