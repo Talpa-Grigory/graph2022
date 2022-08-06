@@ -22,21 +22,21 @@ namespace graph {
 size_t LCA(size_t root, size_t u, size_t v,
          std::unordered_map<size_t, size_t>* match,
          std::unordered_map<size_t, size_t >* father,
-	       std::unordered_map<size_t, size_t >* base,
-		     size_t V) {
+         std::unordered_map<size_t, size_t >* base,
+         size_t V) {
     std::unordered_map<size_t, bool> inp;
     for (size_t i = 0; i < V + 1; i++) {
-        inp[i] = 0;
+      inp[i] = 0;
     }
     while (true) {
-		u = (*base)[u];
-		inp[u] = true;
-		if (u == root)
-			break;
-		u = (*father)[(*match)[u]];
-	}
+    u = (*base)[u];
+    inp[u] = true;
+    if (u == root)
+      break;
+    u = (*father)[(*match)[u]];
+  }
     while (true) {
-		v = (*base)[v];
+      v = (*base)[v];
         if (inp[v])
             return v;
         else
@@ -198,7 +198,7 @@ template <class T>
  *@param match_counts количество ребер в наибольшем парасочетании.
  */
 size_t EdmondsBlossomAlgorithm(const T& graph, size_t V,
-							   std::unordered_map<size_t,size_t >* match) {
+							   std::unordered_map<size_t, size_t >* match) {
     size_t match_counts = 0;
     std::unordered_map<size_t,size_t> father;
     for (size_t i = 0; i < V + 1; i++) {
@@ -207,7 +207,8 @@ size_t EdmondsBlossomAlgorithm(const T& graph, size_t V,
 
     for (size_t u = 0; u < V; u++) {
         if ((*match)[u] == 0)
-            match_counts += AugmentPath(FindAugmentingPath(u, graph, match, & father, V), match, & father);
+            match_counts += 
+            AugmentPath(FindAugmentingPath(u, graph, match, & father, V), match, & father);
     }
     return match_counts;
 }
