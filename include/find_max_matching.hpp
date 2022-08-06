@@ -20,21 +20,21 @@ namespace graph {
  *@param match массив хранящий паросочетания.
  */
 size_t LCA(size_t root, size_t u, size_t v,
-		   std::unordered_map<size_t,size_t>* match,
-		   std::unordered_map<size_t,size_t >* father,
-		   std::unordered_map<size_t,size_t >* base,
-		   size_t V) {
+	std::unordered_map<size_t, size_t>* match,
+	std::unordered_map<size_t, size_t >* father,
+	std::unordered_map<size_t, size_t >* base,
+	size_t V) {
     std::unordered_map<size_t,bool> inp;
     for (size_t i = 0; i < V + 1; i++) {
         inp[i] = 0;
     }
     while (true) {
-	    u = (*base)[u];
-        inp[u] = true;
-        if (u == root)
-            break;
-        u = (*father)[(*match)[u]];
-    }
+		u = (*base)[u];
+		inp[u] = true;
+		if (u == root)
+			break;
+		u = (*father)[(*match)[u]];
+	}
     while (true) {
 		v = (*base)[v];
         if (inp[v])
