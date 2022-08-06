@@ -22,9 +22,9 @@ namespace graph {
  *@param match массив хранящий паросочетания.
  */
 size_t LCA(size_t root, size_t u, size_t v,
-         std::unordered_map<size_t, size_t>* match,
-         std::unordered_map<size_t, size_t >* father,
-         std::unordered_map<size_t, size_t >* base,
+         std::unordered_map<size_t, std::optional<size_t>>* match,
+         std::unordered_map<size_t, std::optional<size_t> >* father,
+         std::unordered_map<size_t, std::optional<size_t> >* base,
          size_t V) {
     std::unordered_map<size_t, bool> inp;
     for (size_t i = 0; i < V + 1; i++) {
@@ -56,9 +56,9 @@ size_t LCA(size_t root, size_t u, size_t v,
  *@param lca наименьший общий предок
  */
 void MarkBlossom(size_t lca, size_t u,
-         std::unordered_map<size_t, size_t>* match,
-         std::unordered_map<size_t, size_t>* father,
-         std::unordered_map<size_t, size_t>* base,
+         std::unordered_map<size_t, std::optional<size_t>>* match,
+         std::unordered_map<size_t, std::optional<size_t>>* father,
+         std::unordered_map<size_t, std::optional<size_t>>* base,
          std::unordered_map<size_t, bool>* inb) {
     while ((*base)[u] != lca) {
         size_t v = ( * match)[u];
@@ -79,10 +79,10 @@ void MarkBlossom(size_t lca, size_t u,
  *@param lca наименьший общий предок
  */
 void BlossomContraction(size_t s, size_t u, size_t v,
-            std::unordered_map<size_t, size_t>* match,
-            std::unordered_map<size_t, size_t>* father,
-            std::unordered_map<size_t, size_t>* base,
-            std::unordered_map<size_t, size_t>* q,
+            std::unordered_map<size_t, std::optional<size_t>>* match,
+            std::unordered_map<size_t, std::optional<size_t>>* father,
+            std::unordered_map<size_t, std::optional<size_t>>* base,
+            std::unordered_map<size_t, std::optional<size_t>>* q,
             std::unordered_map<size_t, bool>* inq,
             size_t* qt, size_t V) {
     size_t lca = LCA(s, u, v, match, father, base, V);
@@ -121,42 +121,42 @@ template <class T>
  *@param match массив хранящий паросочетания.
  */
 std::optional<size_t> FindAugmentingPath(size_t s, const T& graph,
-              std::unordered_map<size_t, size_t>* match,
-              std::unordered_map<size_t, size_t>* father,
+              std::unordered_map<size_t, std::optional<size_t>>* match,
+              std::unordered_map<size_t, std::optional<size_t>>* father,
               size_t V) {
     for (size_t i = 0; i < V + 1; i++) {
-        (*father)[i] = 0;
+        (*father)[i] = std::nullopt;
     }
     size_t qh = 0, qt = 0;
     std::unordered_map<size_t, bool> inq;
     for (size_t i = 0; i < V + 1; i++) {
         inq[i] = 0;
     }
-    std::unordered_map<size_t, size_t> base;
+    std::unordered_map<size_t, std::optional<size_t>> base;
     for (size_t i = 0; i < V + 1; i++) {
         base[i] = i;
     }
-    std::unordered_map<size_t, size_t> q;
+    std::unordered_map<size_t, std::optional<size_t>> q;
     for (size_t i = 0; i < V + 1; i++) {
-        q[i] = 0;
+        q[i] = std::nullopt;
     }
-  q[0] = s;
+    q[0] = s;
     inq[s] = true;
 
     while (qh <= qt) {
-        size_t u = q[qh++];
+        std::optional<size_t> u = q[qh++];
         if (graph.HasVertex(u)) {
           for (auto elem : graph.Edges(u)) {
                 size_t v = elem;
                 if (base[u] != base[v] && (*match)[u] != v) {
                   if ((v == s) ||
-                  ((*match)[v] != 0 &&
-                  (*father)[(*match)[v]] != 0)) {
+                  ((*match)[v] != std::nullopt &&
+                  (*father)[(*match)[v]] != std::nullopt)) {
                     BlossomContraction(s, u, v, match,
                     father, &base, &q, &inq, &qt, V);
-                  } else if ((*father)[v] == 0) {
+                  } else if ((*father)[v] == std::nullopt) {
                       (*father)[v] = u;
-                      if ((*match)[v] == 0) {
+                      if ((*match)[v] == std::nullopt) {
                         return v;
                       } else if (!inq[(*match)[v]]) {
                         ++qt;
@@ -179,13 +179,13 @@ std::optional<size_t> FindAugmentingPath(size_t s, const T& graph,
  *@param father массив хранящий предков нечетных вершин.
  *@param match массив хранящий паросочетания.
  */
-size_t AugmentPath(std::optional<size_t> t, std::unordered_map<size_t, size_t>* match,
-           std::unordered_map<size_t, size_t>* father) {
+size_t AugmentPath(std::optional<size_t> t, std::unordered_map<size_t, std::optional<size_t>>* match,
+           std::unordered_map<size_t, std::optional<size_t>>* father) {
     if(t == std::nullopt)
       return 0;
     std::optional<size_t> u = t;
-    size_t v, w;
-    while (u != 0) {
+    std::optional<size_t> v, w;
+    while (u != std::nullopt) {
         v = (*father)[u];
         w = (*match)[v];
         (*match)[v] = u;
@@ -205,15 +205,15 @@ template <class T>
  *@param match_counts количество ребер в наибольшем парасочетании.
  */
 size_t EdmondsBlossomAlgorithm(const T& graph, size_t V,
-                 std::unordered_map<size_t, size_t>* match) {
+                 std::unordered_map<size_t, std::optional<size_t>>* match) {
     size_t match_counts = 0;
-    std::unordered_map<size_t, size_t> father;
+    std::unordered_map<size_t, std::optional<size_t>> father;
     for (size_t i = 0; i < V + 1; i++) {
-        father[i] = 0;
+        father[i] = std::nullopt;
     }
 
     for (size_t u = 0; u < V; u++) {
-        if ((*match)[u] == 0)
+        if ((*match)[u] == std::nullopt)
             match_counts +=
             AugmentPath(FindAugmentingPath(u,
             graph, match, & father, V), match, & father);
@@ -232,9 +232,9 @@ template <class T>
 void FindMaxMatching(const T& graph,
            std::vector<std::pair<size_t, size_t>>* result) {
     size_t V = graph.NumVertices();
-    std::unordered_map<size_t, size_t> match;
+    std::unordered_map<size_t, std::optional<size_t>> match;
     for (size_t i = 0; i < V + 1; i++) {
-        match[i] = 0;
+        match[i] = std::nullopt;
     }
     size_t res = EdmondsBlossomAlgorithm(graph, V, & match);
     if (!res)
