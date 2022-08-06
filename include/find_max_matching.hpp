@@ -10,6 +10,7 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 #include "graph.hpp"
 
 namespace graph {
@@ -54,14 +55,14 @@ size_t LCA(size_t root, size_t u, size_t v,
  *@param lca наименьший общий предок
  */
 void MarkBlossom(size_t lca, size_t u,
-				 std::unordered_map<size_t, size_t>* match,
-				 std::unordered_map<size_t, size_t>* father,
-				 std::unordered_map<size_t, size_t>* base,
-				 std::unordered_map<size_t, bool>* inb) {
+         std::unordered_map<size_t, size_t>* match,
+         std::unordered_map<size_t, size_t>* father,
+         std::unordered_map<size_t, size_t>* base,
+         std::unordered_map<size_t, bool>* inb) {
     while ((*base)[u] != lca) {
         size_t v = ( * match)[u];
         (*inb)[(*base)[u]] = true;
-	    (*inb)[(*base)[v]] = true;
+        (*inb)[(*base)[v]] = true;
         u = (*father)[v];
         if ((*base)[u] != lca)
             (*father)[u] = v;
@@ -77,12 +78,12 @@ void MarkBlossom(size_t lca, size_t u,
  *@param lca наименьший общий предок
  */
 void BlossomContraction(size_t s, size_t u, size_t v,
-						std::unordered_map<size_t, size_t>* match,
-						std::unordered_map<size_t, size_t>* father,
-						std::unordered_map<size_t, size_t>* base,
-						std::unordered_map<size_t, size_t>* q,
-						std::unordered_map<size_t, bool>* inq,
-						size_t* qt, size_t V) {
+            std::unordered_map<size_t, size_t>* match,
+            std::unordered_map<size_t, size_t>* father,
+            std::unordered_map<size_t, size_t>* base,
+            std::unordered_map<size_t, size_t>* q,
+            std::unordered_map<size_t, bool>* inq,
+            size_t* qt, size_t V) {
     size_t lca = LCA(s, u, v, match, father, base, V);
     std::unordered_map<size_t, bool> inb;
     for (size_t i = 0; i < V + 1; i++) {
@@ -100,8 +101,8 @@ void BlossomContraction(size_t s, size_t u, size_t v,
         if (inb[(*base)[i]]) {
             (*base)[i] = lca;
             if (!(*inq)[i]) {
-				++(*qt);
-				(*q)[(*qt)] = i;
+        ++(*qt);
+        (*q)[(*qt)] = i;
                 (*inq)[i] = true;
             }
         }
@@ -119,9 +120,9 @@ template <class T>
  *@param match массив хранящий паросочетания.
  */
 size_t FindAugmentingPath(size_t s, const T& graph,
-						  std::unordered_map<size_t, size_t>* match,
-						  std::unordered_map<size_t, size_t>* father,
-						  size_t V) {
+              std::unordered_map<size_t, size_t>* match,
+              std::unordered_map<size_t, size_t>* father,
+              size_t V) {
     for (size_t i = 0; i < V + 1; i++) {
         (*father)[i] = 0;
     }
@@ -138,17 +139,20 @@ size_t FindAugmentingPath(size_t s, const T& graph,
     for (size_t i = 0; i < V + 1; i++) {
         q[i] = 0;
     }
-	q[0] = s;
+  q[0] = s;
     inq[s] = true;
 
     while (qh <= qt) {
         size_t u = q[qh++];
         if (graph.HasVertex(u)) {
-            for (auto elem: graph.Edges(u)) {
+          for (auto elem : graph.Edges(u)) {
                 size_t v = elem;
                 if (base[u] != base[v] && (*match)[u] != v) {
-                    if ((v == s) || ((*match)[v] != 0 && (*father)[(*match)[v]] != 0))
-                        BlossomContraction(s, u, v, match, father, & base, & q, & inq, & qt, V);
+                  if ((v == s) ||
+                  ((*match)[v] != 0 &&
+                  (*father)[(*match)[v]] != 0))
+                    BlossomContraction(s, u, v, match,
+                    father,&base,&q,&inq,&qt, V);
                     else if ((*father)[v] == 0) { // предполагается что нумерация вершин начинается с 1
                         (*father)[v] = u;
                         if ((*match)[v] == 0)
@@ -175,7 +179,7 @@ size_t FindAugmentingPath(size_t s, const T& graph,
  *@param match массив хранящий паросочетания.
  */
 size_t AugmentPath(size_t t, std::unordered_map<size_t, size_t>* match,
-				   std::unordered_map<size_t, size_t>* father) {
+           std::unordered_map<size_t, size_t>* father) {
     size_t u = t;
     size_t v, w;
     while (u != 0) {
@@ -208,7 +212,8 @@ size_t EdmondsBlossomAlgorithm(const T& graph, size_t V,
     for (size_t u = 0; u < V; u++) {
         if ((*match)[u] == 0)
             match_counts += 
-            AugmentPath(FindAugmentingPath(u, graph, match, & father, V), match, & father);
+            AugmentPath(FindAugmentingPath(u,
+            graph, match, & father, V), match, & father);
     }
     return match_counts;
 }
@@ -237,5 +242,5 @@ void FindMaxMatching(const T& graph,
         }
     }
 }
-} // namespace graph
-#endif // INCLUDE_FIND_MAX_MATCHING_HPP_
+}  // namespace graph
+#endif  // INCLUDE_FIND_MAX_MATCHING_HPP_

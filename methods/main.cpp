@@ -196,7 +196,6 @@ int main(int argc, char* argv[]) {
 
     res.set_content(output.dump(), "application/json");
   });
-  
   /* /FindMaxMatching это адрес для запросов
   на сервере. */
   svr.Post("/FindMaxMatching", [&](const httplib::Request& req,
