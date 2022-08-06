@@ -147,24 +147,26 @@ size_t FindAugmentingPath(size_t s, const T& graph,
         if (graph.HasVertex(u)) {
           for (auto elem : graph.Edges(u)) {
                 size_t v = elem;
-                if (base[u] != base[v] && (*match)[u] != v) {
+                if (base[u] != base[v] && (*match)[u] != v)
+                {
                   if ((v == s) ||
                   ((*match)[v] != 0 &&
-                  (*father)[(*match)[v]] != 0)) {
+                  (*father)[(*match)[v]] != 0))
+                  {
                     BlossomContraction(s, u, v, match,
                     father, &base, &q, &inq, &qt, V);
-                  }
-// предполагается что нумерация вершин начинается с 1
-                  else if ((*father)[v] == 0) {
+                  } else if ((*father)[v] == 0)
+                  {
                     (*father)[v] = u;
-                     if ((*match)[v] == 0) {
+                    if ((*match)[v] == 0)
+                    {
                       return v;
-                     }
-                     else if (!inq[(*match)[v]]) {
-                      ++qt;
-                      q[qt] = (*match)[v];
-                      inq[(*match)[v]] = true;
-                     }
+                    } else if (!inq[(*match)[v]])
+                    {
+                        ++qt;
+                        q[qt] = (*match)[v];
+                        inq[(*match)[v]] = true;
+                    }
                   }
                 }
             }
