@@ -149,7 +149,7 @@ size_t FindAugmentingPath(size_t s, const T& graph,
                 if (base[u] != base[v] && (*match)[u] != v) {
                     if ((v == s) || ((*match)[v] != 0 && (*father)[(*match)[v]] != 0))
                         BlossomContraction(s, u, v, match, father, & base, & q, & inq, & qt, V);
-                    else if ((*father)[v] == 0) {
+                    else if ((*father)[v] == 0) { // предполагается что нумерация вершин начинается с 1
                         (*father)[v] = u;
                         if ((*match)[v] == 0)
                             return v;

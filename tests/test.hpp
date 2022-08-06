@@ -33,11 +33,17 @@ void TestWeightedOrientedGraph();
 /* Сюда нужно добавить объявления тестовых функций. */
 
 /**
- * @brief Набор тестов для алгоритма сортировки вставками.
+ * @brief Набор тестов для алгоритма поиска наибольшего паросочетания.
  *
  * @param cli Указатель на HTTP клиент.
  */
 void TestFindMaxMatching(httplib::Client* cli);
+
+/**
+ * @brief Набор тестов для алгоритма сортировки вставками.
+ *
+ * @param cli Указатель на HTTP клиент.
+ */
 void TestTopologicalSorting(httplib::Client* cli);
 
 /** 
