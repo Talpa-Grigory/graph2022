@@ -153,17 +153,18 @@ size_t FindAugmentingPath(size_t s, const T& graph,
                   (*father)[(*match)[v]] != 0))
                     BlossomContraction(s, u, v, match,
                     father,&base,&q,&inq,&qt, V);
-                    else if ((*father)[v] == 0) { // предполагается что нумерация вершин начинается с 1
-                        (*father)[v] = u;
-                        if ((*match)[v] == 0)
-                            return v;
-                        else if (!inq[(*match)[v]]) {
-							++qt;
-							q[qt] = (*match)[v];
-                            inq[(*match)[v]] = true;
-                        }
-                    }
-                }
+// предполагается что нумерация вершин начинается с 1
+                  else if ((*father)[v] == 0) {
+                    (*father)[v] = u;
+                     if ((*match)[v] == 0)
+                      return v;
+                     else if (!inq[(*match)[v]]) {
+                      ++qt;
+                      q[qt] = (*match)[v];
+                      inq[(*match)[v]] = true;
+                     }
+                  }
+                  }
             }
         }
     }
@@ -202,7 +203,7 @@ template <class T>
  *@param match_counts количество ребер в наибольшем парасочетании.
  */
 size_t EdmondsBlossomAlgorithm(const T& graph, size_t V,
-							   std::unordered_map<size_t, size_t>* match) {
+                 std::unordered_map<size_t, size_t>* match) {
     size_t match_counts = 0;
     std::unordered_map<size_t, size_t> father;
     for (size_t i = 0; i < V + 1; i++) {
@@ -211,7 +212,7 @@ size_t EdmondsBlossomAlgorithm(const T& graph, size_t V,
 
     for (size_t u = 0; u < V; u++) {
         if ((*match)[u] == 0)
-            match_counts += 
+            match_counts +=
             AugmentPath(FindAugmentingPath(u,
             graph, match, & father, V), match, & father);
     }
@@ -227,7 +228,7 @@ template <class T>
  *@param result вектор, в котором хранится ответ.
  */
 void FindMaxMatching(const T& graph,
-					 std::vector<std::pair<size_t, size_t>>* result) {
+           std::vector<std::pair<size_t, size_t>>* result) {
     size_t V = graph.NumVertices();
     std::unordered_map<size_t, size_t> match;
     for (size_t i = 0; i < V + 1; i++) {
@@ -238,7 +239,7 @@ void FindMaxMatching(const T& graph,
         return;
     for (size_t i = 0; i < V; i++) {
         if (i < match[i]) {
-            (*result).push_back({i,match[i]});
+            (*result).push_back({i, match[i]});
         }
     }
 }
