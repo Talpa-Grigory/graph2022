@@ -21,7 +21,7 @@ namespace graph {
  *@param father массив хранящий предков нечетных вершин.
  *@param match массив хранящий паросочетания.
  */
-size_t LCA(size_t root, size_t u, size_t v,
+std::optional<size_t> LCA(std::optional<size_t> root, std::optional<size_t> u, std::optional<size_t> v,
          std::unordered_map<size_t, std::optional<size_t>>* match,
          std::unordered_map<size_t, std::optional<size_t> >* father,
          std::unordered_map<size_t, std::optional<size_t> >* base,
@@ -55,13 +55,13 @@ size_t LCA(size_t root, size_t u, size_t v,
  *@param match массив хранящий паросочетания.
  *@param lca наименьший общий предок
  */
-void MarkBlossom(size_t lca, size_t u,
+void MarkBlossom(std::optional<size_t> lca, std::optional<size_t> u,
          std::unordered_map<size_t, std::optional<size_t>>* match,
          std::unordered_map<size_t, std::optional<size_t>>* father,
          std::unordered_map<size_t, std::optional<size_t>>* base,
          std::unordered_map<size_t, bool>* inb) {
     while ((*base)[u] != lca) {
-        size_t v = ( * match)[u];
+        std::optional<size_t> v = ( * match)[u];
         (*inb)[(*base)[u]] = true;
         (*inb)[(*base)[v]] = true;
         u = (*father)[v];
@@ -78,14 +78,14 @@ void MarkBlossom(size_t lca, size_t u,
  *@param father массив хранящий предков нечетных вершин.
  *@param lca наименьший общий предок
  */
-void BlossomContraction(size_t s, size_t u, size_t v,
+void BlossomContraction(std::optional<size_t> s, std::optional<size_t> u, std::optional<size_t> v,
             std::unordered_map<size_t, std::optional<size_t>>* match,
             std::unordered_map<size_t, std::optional<size_t>>* father,
             std::unordered_map<size_t, std::optional<size_t>>* base,
             std::unordered_map<size_t, std::optional<size_t>>* q,
             std::unordered_map<size_t, bool>* inq,
             size_t* qt, size_t V) {
-    size_t lca = LCA(s, u, v, match, father, base, V);
+    std::optional<size_t> lca = LCA(s, u, v, match, father, base, V);
     std::unordered_map<size_t, bool> inb;
     for (size_t i = 0; i < V + 1; i++) {
         inb[i] = 0;
