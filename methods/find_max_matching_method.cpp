@@ -62,14 +62,14 @@ static int FindMaxMatchingMethodHelper(const nlohmann::json& input,
   size_t numEdges = input.at("numEdges");
   T graph;
   size_t max = 0;
-  for(size_t elem : graph.Vertices()){
-    if(elem > max)
+  for (size_t elem : graph.Vertices()) {
+    if (elem > max)
       max = elem;
   }
   for (size_t i = 0; i < size; i++) {
     /* Для словарей используется индекс в виде строки,
     а для массивов просто целое число типа size_t. */
-    if(input.at("vertices").at(i) == 0){
+    if (input.at("vertices").at(i) == 0) {
       graph.AddVertex(max + 1);
       continue;
     }
@@ -86,9 +86,9 @@ static int FindMaxMatchingMethodHelper(const nlohmann::json& input,
   /* Сохраняем в ответе результат работы алгоритма. */
   (*output)["size"] = size;
   for (size_t i = 0; i < result.size(); i++) {
-    if(result[i].first == max + 1)
+    if (result[i].first == max + 1)
       result[i].first = 0;
-    if(result[i].second == max + 1)
+    if (result[i].second == max + 1)
       result[i].second = 0;
     (*output)["data"][i][0] = result[i].first;
     (*output)["data"][i][1] = result[i].second;
