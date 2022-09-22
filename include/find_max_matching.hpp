@@ -25,7 +25,6 @@ size_t LCA(size_t root, size_t u, size_t v,
          std::unordered_map<size_t, size_t >* father,
          std::unordered_map<size_t, size_t >* base,
          size_t V) {
-
     std::unordered_map<size_t, bool> inp;
 
     for (size_t i = 0; i < V + 1; i++) {
@@ -63,7 +62,6 @@ void MarkBlossom(size_t lca, size_t u,
          std::unordered_map<size_t, size_t>* father,
          std::unordered_map<size_t, size_t>* base,
          std::unordered_map<size_t, bool>* inb) {
-
     while ((*base)[u] != lca) {
         size_t v = ( * match)[u];
         (*inb)[(*base)[u]] = true;
@@ -89,7 +87,6 @@ void BlossomContraction(size_t s, size_t u, size_t v,
             std::unordered_map<size_t, size_t>* q,
             std::unordered_map<size_t, bool>* inq,
             size_t* qt, size_t V) {
-                
     size_t lca = LCA(s, u, v, match, father, base, V);
     std::unordered_map<size_t, bool> inb;
     for (size_t i = 0; i < V + 1; i++) {
